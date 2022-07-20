@@ -16,14 +16,11 @@ import java.util.Map;
 @Service
 public class OneNetRestTemplate {
 
-    @Value("${orion.consumer.ip}")
-    private String onenetConsumerEndpoint;
-
-    @Value("${orion.provider.ip}")
-    private String onenetProviderEndpoint;
-
-    @Value("${sofia.uri}")
-    private String sofiaUri;
+//    @Value("${orion.consumer.fiware.ip}")
+//    private String onenetConsumerEndpoint;
+//
+//    @Value("${orion.provider.fiware.ip}")
+//    private String onenetProviderEndpoint;
 
     private final RestTemplate restTemplate;
 
@@ -32,7 +29,7 @@ public class OneNetRestTemplate {
     }
 
     public Map<String, Object> update(Map<String, Object> jsonLdParameters,
-                                              Map<String, String> headers, String id) {
+                                              Map<String, String> headers, String type, String id, String endpoint) {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Type", "application/ld+json");
@@ -40,7 +37,7 @@ public class OneNetRestTemplate {
 
         ResponseEntity<Object> response =
         restTemplate.exchange(
-                URI.create(onenetProviderEndpoint + "/ngsi-ld/v1/entities/urn:ngsi-ld:" + id + "/attrs"),
+                URI.create(endpoint + "/ngsi-ld/v1/entities/urn:ngsi-ld:" + type + ":" + id + "/attrs"),
                 HttpMethod.POST,
                 httpEntity,
                 new ParameterizedTypeReference<Object>() {
@@ -50,54 +47,52 @@ public class OneNetRestTemplate {
         return jsonLdParameters;
     }
 
-    public void saveOnenetResponse(Map<String, Map<String, Object>> parameters,
-                                                  String id,
-                                      Map<String, String> headers) {
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Type", "application/json");
-        httpHeaders.add("Authorization", headers.get("authorization"));
-        HttpEntity<Map<String, Map<String, Object>>> httpEntity =
-                new HttpEntity<Map<String, Map<String, Object>>>(parameters, httpHeaders);
-
-        restTemplate.postForObject(
-                URI.create(sofiaUri + "/form?id=" + id ),
-                httpEntity,
-                Void.class
-        );
-
-    }
+//    public void saveOnenetResponse(Map<String, Map<String, Object>> parameters,
+//                                                  String id,
+//                                      Map<String, String> headers) {
+//
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add("Content-Type", "application/json");
+//        httpHeaders.add("Authorization", headers.get("authorization"));
+//        HttpEntity<Map<String, Map<String, Object>>> httpEntity =
+//                new HttpEntity<Map<String, Map<String, Object>>>(parameters, httpHeaders);
+//
+//        restTemplate.postForObject(
+//                URI.create(sofiaUri + "/form?id=" + id ),
+//                httpEntity,
+//                Void.class
+//        );
+//
+//    }
 
     public Map<String, Object> post(Map<String, Object> jsonLdParameters,
-                                            Map<String, String> headers) {
-
+                                            Map<String, String> headers, String endpoint) {
         HttpHeaders httpHeaders = new HttpHeaders();
 
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/ld+json");
         HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<Map<String, Object>>(jsonLdParameters, httpHeaders);
         try {
+            ResponseEntity<Object> response =
             restTemplate.exchange(
-                    URI.create(onenetProviderEndpoint +"/ngsi-ld/v1/entities/"),
+                    URI.create(endpoint +"/ngsi-ld/v1/entities/"),
                     HttpMethod.POST,
                     httpEntity,
-                    void.class
+                    new ParameterizedTypeReference<Object>() {
+                    }
             );
         }catch (Exception ex){
             String s = "";
             s = ex.getMessage();
-
         }
-
-
 
         return jsonLdParameters;
     }
 
-    public Boolean checkExistance(String id) {
+    public Boolean checkExistance(String endpoint, String type, String id) {
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
             HttpEntity httpEntity = new HttpEntity(httpHeaders);
-            restTemplate.exchange(onenetProviderEndpoint + "/ngsi-ld/v1/entities/urn:ngsi-ld:" + id,
+            restTemplate.exchange(endpoint + "/ngsi-ld/v1/entities/urn:ngsi-ld:" + type + ":" + id,
                     HttpMethod.GET,
                     httpEntity,
                     new ParameterizedTypeReference<Object>() {
@@ -109,12 +104,27 @@ public class OneNetRestTemplate {
         return true;
     }
 
-    public Map<String, Object> getFromProvider(String id) {
+    public Map<String, Object> retrieveData(String type, String id, String endpoint) {
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            HttpEntity httpEntity = new HttpEntity(httpHeaders);
+
+        ResponseEntity<Map> jsonLdParameters =
+                     restTemplate.exchange(endpoint + "/ngsi-ld/v1/entities/urn:ngsi-ld:" + type + ":" + id,
+                            HttpMethod.GET,
+                            httpEntity,
+                             new ParameterizedTypeReference<Map>() {}
+                    );
+
+        return jsonLdParameters.getBody();
+    }
+
+    public Map<String, Object> getFromProvider(String id, String endpoint) {
         try {
             HttpHeaders httpHeaders = new HttpHeaders();
             HttpEntity httpEntity = new HttpEntity(httpHeaders);
             ResponseEntity<Map<String, Object>> responce =
-                    restTemplate.exchange(onenetProviderEndpoint + "/ngsi-ld/v1/entities/urn:ngsi-ld:" + id,
+                    restTemplate.exchange(endpoint + "/ngsi-ld/v1/entities/urn:ngsi-ld:" + id,
                     HttpMethod.GET,
                     httpEntity,
                     new ParameterizedTypeReference<Map<String, Object>>() {
@@ -126,13 +136,13 @@ public class OneNetRestTemplate {
         }
     }
 
-    public Map<String, Object> sourceRegistration(Map<String, Object> jsonLdParameters) {
+    public Map<String, Object> sourceRegistration(Map<String, Object> jsonLdParameters, String endpoint) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Type", "application/ld+json");
         HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<Map<String, Object>>(jsonLdParameters, httpHeaders);
 
         restTemplate.postForObject(
-                URI.create(onenetProviderEndpoint + "/ngsi-ld/v1/csourceRegistrations/"),
+                URI.create(endpoint + "/ngsi-ld/v1/csourceRegistrations/"),
                 httpEntity,
                 Void.class
         );
@@ -140,4 +150,16 @@ public class OneNetRestTemplate {
         return jsonLdParameters;
     }
 
+    public void dataentityRequesFromProvider(Map<String, Object> dataentityRequestJsonLd, String id ,String endpoint) {
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", "application/ld+json");
+        HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<Map<String, Object>>(dataentityRequestJsonLd, httpHeaders);
+
+        restTemplate.exchange(
+                URI.create(endpoint + "/ngsi-ld/v1/csourceRegistrations/"),
+                HttpMethod.POST,
+                httpEntity,
+                Void.class);
+    }
 }

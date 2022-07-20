@@ -32,24 +32,25 @@ public class IdsResourceService {
                                           Map<String, Map<String, Object>> parameters,
                                           Map<String, String> headers) {
 
-        UserDTO userDTO = userService.getCurrentUser(headers.get("authorization"));
-
-        Map<String, Object> jsonLdParameters = this.parametersToJsonLd(parameters, userDTO);
-        String entityId = this.parametersToJsonLdId(parameters);
-
-        Boolean exists = this.oneNetRestTemplate.checkExistance(entityId);
-
-        if (exists) {
-             this.oneNetRestTemplate.update(jsonLdParameters, headers, entityId);
-        } else {
-             this.oneNetRestTemplate.post(jsonLdParameters, headers);
-        }
-
-        Map<String, Object> responce = this.oneNetRestTemplate.getFromProvider(entityId);
-
-        Map<String, Map<String, Object>> responseParameters = this.jsonLdToParameters(responce);
-
-        this.oneNetRestTemplate.saveOnenetResponse(responseParameters, formId, headers);
+//        UserDTO userDTO = userService.getCurrentUser(headers.get("authorization"));
+//
+//        Map<String, Object> jsonLdParameters = this.parametersToJsonLd(parameters, userDTO);
+//        String entityId = this.parametersToJsonLdId(parameters);
+//
+//        Boolean exists = this.oneNetRestTemplate.checkExistance("", "", entityId);
+//
+//
+//        if (exists) {
+//             this.oneNetRestTemplate.update(jsonLdParameters, headers,"", entityId);
+//        } else {
+//             this.oneNetRestTemplate.post(jsonLdParameters, headers);
+//        }
+//
+//        Map<String, Object> responce = this.oneNetRestTemplate.getFromProvider(entityId);
+//
+//        Map<String, Map<String, Object>> responseParameters = this.jsonLdToParameters(responce);
+//
+//       // this.oneNetRestTemplate.saveOnenetResponse(responseParameters, formId, headers);
 
         return null;
     }
@@ -57,16 +58,16 @@ public class IdsResourceService {
     public Map<String, Map<String, Object>> getFromProvider(String id,
                                                             Map<String, String> headers) {
 
-        Map<String, Object> responce = this.oneNetRestTemplate.getFromProvider(id);
+        Map<String, Object> responce = this.oneNetRestTemplate.getFromProvider(id,"");
         Map<String, Map<String, Object>> parameters = this.jsonLdToParameters(responce);
-        this.oneNetRestTemplate.saveOnenetResponse(parameters, id, headers);
+      //  this.oneNetRestTemplate.saveOnenetResponse(parameters, id, headers);
         return parameters;
     }
 
     public Map<String, Object> saveResponce(String id,
                                             Map<String, String> headers) {
 
-        Map<String, Object> responce = this.oneNetRestTemplate.getFromProvider(id);
+        Map<String, Object> responce = this.oneNetRestTemplate.getFromProvider(id, "");
 
         Map<String, Map<String, Object>> parameters = this.jsonLdToParameters(responce);
 
