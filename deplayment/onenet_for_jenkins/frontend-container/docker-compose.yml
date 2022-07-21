@@ -3,7 +3,7 @@ services:
   sofia-frontend:
     build:
       context: sofia-frontend
-      dockerfile: sofia-frontend/Dockerfile
+      dockerfile: sofia-frontend/Dockerfile_
       args:
         BACKEND_URL: http://localhost:15502/api
     image: sofia-frontend

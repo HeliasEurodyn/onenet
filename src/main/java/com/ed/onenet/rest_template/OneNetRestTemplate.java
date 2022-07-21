@@ -16,12 +16,6 @@ import java.util.Map;
 @Service
 public class OneNetRestTemplate {
 
-//    @Value("${orion.consumer.fiware.ip}")
-//    private String onenetConsumerEndpoint;
-//
-//    @Value("${orion.provider.fiware.ip}")
-//    private String onenetProviderEndpoint;
-
     private final RestTemplate restTemplate;
 
     public OneNetRestTemplate(RestTemplate restTemplate) {
@@ -46,24 +40,6 @@ public class OneNetRestTemplate {
 
         return jsonLdParameters;
     }
-
-//    public void saveOnenetResponse(Map<String, Map<String, Object>> parameters,
-//                                                  String id,
-//                                      Map<String, String> headers) {
-//
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add("Content-Type", "application/json");
-//        httpHeaders.add("Authorization", headers.get("authorization"));
-//        HttpEntity<Map<String, Map<String, Object>>> httpEntity =
-//                new HttpEntity<Map<String, Map<String, Object>>>(parameters, httpHeaders);
-//
-//        restTemplate.postForObject(
-//                URI.create(sofiaUri + "/form?id=" + id ),
-//                httpEntity,
-//                Void.class
-//        );
-//
-//    }
 
     public Map<String, Object> post(Map<String, Object> jsonLdParameters,
                                             Map<String, String> headers, String endpoint) {
@@ -117,23 +93,6 @@ public class OneNetRestTemplate {
                     );
 
         return jsonLdParameters.getBody();
-    }
-
-    public Map<String, Object> getFromProvider(String id, String endpoint) {
-        try {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            HttpEntity httpEntity = new HttpEntity(httpHeaders);
-            ResponseEntity<Map<String, Object>> responce =
-                    restTemplate.exchange(endpoint + "/ngsi-ld/v1/entities/urn:ngsi-ld:" + id,
-                    HttpMethod.GET,
-                    httpEntity,
-                    new ParameterizedTypeReference<Map<String, Object>>() {
-                    }
-            );
-            return responce.getBody();
-        } catch (HttpStatusCodeException ex) {
-            return null;
-        }
     }
 
     public Map<String, Object> sourceRegistration(Map<String, Object> jsonLdParameters, String endpoint) {

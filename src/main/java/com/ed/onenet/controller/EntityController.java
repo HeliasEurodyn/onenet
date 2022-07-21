@@ -45,5 +45,4 @@ public class EntityController {
         FileResponse fileResponse =  this.entityService.getLocalObjectData(id, encodedFiwareUrl, headers);
         return fileResponse;
     }
-
 }

@@ -60,7 +60,7 @@ services:
         REDIS_HOST: sofiaredis
         REDIS_PORT: 6379
         REDIS_PASSWORD: cU7bUfAKHmvvs4yg
-      dockerfile: sofia-backend/Dockerfile
+      dockerfile: sofia-backend/Dockerfile_
     image: sofia-backend
     container_name: sofia-backend
     ports:
@@ -77,7 +77,7 @@ services:
       args:
         ONENET_IP: http://onenet:15545
         SOFIA_IP: http://sofia-backend:15502
-      dockerfile: sofia-api-gateway/Dockerfile
+      dockerfile: sofia-api-gateway/Dockerfile_
     image: sofia-api-gateway
     container_name: sofia-api-gateway
     ports:
@@ -97,7 +97,7 @@ services:
         SOFIA_URI: http://sofia-backend:15502/api
         ORION_CONSUMER_IP: http://192.168.1.110:1026
         ORION_PROVIDER_IP: http://192.168.1.110:1027
-      dockerfile: onenet/Dockerfile
+      dockerfile: onenet/Dockerfile_
     image: onenet
     container_name: onenet
     ports:
@@ -110,7 +110,7 @@ services:
   sofia-frontend:
     build:
       context: sofia-frontend
-      dockerfile: sofia-frontend/Dockerfile
+      dockerfile: sofia-frontend/Dockerfile_
       args:
         BACKEND_URL: http://localhost:15502/api
     image: sofia-frontend

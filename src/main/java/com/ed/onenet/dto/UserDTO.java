@@ -1,11 +1,9 @@
 package com.ed.onenet.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sun.istack.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
 
 @Getter
 @Setter
@@ -19,10 +17,8 @@ public class UserDTO {
 
     private String id;
 
-    @NotNull
     private String username;
 
-    @NotNull
     private String email;
 
     private String companyId;

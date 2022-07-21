@@ -4,7 +4,6 @@ import com.ed.onenet.dto.FileResponse;
 import com.ed.onenet.dto.FormResponse;
 import com.ed.onenet.rest_template.OneNetRestTemplate;
 import com.ed.onenet.rest_template.SofiaRestTemplate;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
@@ -96,10 +95,6 @@ public class EntityService {
         if (!exists) {
             Map<String, Object> dataentityRequestJsonLd =
                     this.createConsumerProviderRequestJsonLd(id,"dataentity", providerAppdataUrl);
-
-         //   ObjectMapper mapper = new ObjectMapper();
-        //    String jsonString = mapper.writeValueAsString(dataentityRequestJsonLd);
-         //   System.out.println(jsonString);
 
             this.oneNetRestTemplate.dataentityRequesFromProvider(dataentityRequestJsonLd, id, consumerFiwareUrl);
         }

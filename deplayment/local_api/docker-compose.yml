@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  local_api:
+    build:
+      context: local-api
+      args:
+        SOFIA_URI: https://onenet-ngsi-ld.eurodyn.com/api
+      dockerfile: Dockerfile
+    image: onenet
+    container_name: onenet
+    ports:
+      - "30001:30001"
+    restart: unless-stopped
