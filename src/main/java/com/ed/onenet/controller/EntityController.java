@@ -28,13 +28,14 @@ public class EntityController {
         return this.entityService.postObject(formId, parameters, headers);
     }
 
-    @GetMapping(produces = "text/plain")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE )
     public FileResponse getObjectData(@RequestParam("id") String id,
-                                @RequestParam("appdata") String encodedAppdataUrl,
+                                @RequestParam("provider_ecc") String encodedEccUrl,
                                 @RequestParam("consumer_fiware") String encodedConsumerFiwareUrl,
-                                @RequestHeader Map<String, String> headers) {
+                                @RequestParam("consumer_data_app") String encodedConsumerDataAppUrl,
+                                      @RequestHeader Map<String, String> headers) {
 
-        return this.entityService.getObjectData(id, encodedAppdataUrl, encodedConsumerFiwareUrl, headers);
+        return this.entityService.getObjectData(id, encodedEccUrl, encodedConsumerFiwareUrl,encodedConsumerDataAppUrl, headers);
     }
 
     @GetMapping(path = "/local")

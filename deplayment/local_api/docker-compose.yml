@@ -6,8 +6,9 @@ services:
       args:
         SOFIA_URI: https://onenet-ngsi-ld.eurodyn.com/api
       dockerfile: Dockerfile
-    image: onenet
-    container_name: onenet
+    image: local-api
+    container_name: local-api
     ports:
       - "30001:30001"
+      - "30000:30000"
     restart: unless-stopped

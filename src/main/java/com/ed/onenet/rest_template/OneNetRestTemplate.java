@@ -86,7 +86,7 @@ public class OneNetRestTemplate {
             HttpEntity httpEntity = new HttpEntity(httpHeaders);
 
         ResponseEntity<Map> jsonLdParameters =
-                     restTemplate.exchange(endpoint + "/ngsi-ld/v1/entities/urn:ngsi-ld:" + type + ":" + id,
+                     restTemplate.exchange(endpoint + "/getentity/urn:ngsi-ld:" + type + ":" + id,
                             HttpMethod.GET,
                             httpEntity,
                              new ParameterizedTypeReference<Map>() {}
@@ -109,14 +109,14 @@ public class OneNetRestTemplate {
         return jsonLdParameters;
     }
 
-    public void dataentityRequesFromProvider(Map<String, Object> dataentityRequestJsonLd, String id ,String endpoint) {
+    public void dataentityRequesFromProvider(Map<String, Object> dataentityRequestJson ,String endpoint) {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Type", "application/ld+json");
-        HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<Map<String, Object>>(dataentityRequestJsonLd, httpHeaders);
+        HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<Map<String, Object>>(dataentityRequestJson, httpHeaders);
 
         restTemplate.exchange(
-                URI.create(endpoint + "/ngsi-ld/v1/csourceRegistrations/"),
+                URI.create(endpoint + "/registration"),
                 HttpMethod.POST,
                 httpEntity,
                 Void.class);

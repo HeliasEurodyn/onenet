@@ -65,12 +65,12 @@ public class EntityService {
 
             String type = (String) jsonLdParameters.get("type");
 
-            Boolean exists = this.oneNetRestTemplate.checkExistance(providerFiwareIp, type, id);
-            if (exists) {
-                this.oneNetRestTemplate.update(jsonLdParameters, headers, type, id, providerFiwareIp);
-            } else {
+           // Boolean exists = this.oneNetRestTemplate.checkExistance(providerFiwareIp, type, id);
+           // if (exists) {
+           //     this.oneNetRestTemplate.update(jsonLdParameters, headers, type, id, providerFiwareIp);
+           // } else {
                 this.oneNetRestTemplate.post(jsonLdParameters, headers, providerFiwareIp);
-            }
+           // }
 
         }
 
@@ -79,42 +79,43 @@ public class EntityService {
 
 
     public FileResponse getObjectData(String id,
-                                String encodedProviderAppdataUrl,
+                                String encodedEccUrl,
                                 String encodedConsumerFiwareUrl,
+                                      String encodedConsumerDataAppUrl,
                                 Map<String, String> headers) {
 
-        byte[] decodedBytes = Base64.getDecoder().decode(encodedProviderAppdataUrl);
-        String providerAppdataUrl = new String(decodedBytes);
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedEccUrl);
+        String eccUrl = new String(decodedBytes);
 
         decodedBytes = Base64.getDecoder().decode(encodedConsumerFiwareUrl);
         String consumerFiwareUrl = new String(decodedBytes);
 
+        decodedBytes = Base64.getDecoder().decode(encodedConsumerDataAppUrl);
+        String consumerDataAppUrl = new String(decodedBytes);
+
         List<String> fileParts = new ArrayList<>();
 
-        Boolean exists = this.oneNetRestTemplate.checkExistance(consumerFiwareUrl, "dataentity", id);
-        if (!exists) {
-            Map<String, Object> dataentityRequestJsonLd =
-                    this.createConsumerProviderRequestJsonLd(id,"dataentity", providerAppdataUrl);
 
-            this.oneNetRestTemplate.dataentityRequesFromProvider(dataentityRequestJsonLd, id, consumerFiwareUrl);
-        }
+        Map<String, Object> reqJsonParameters = new HashMap<>();
+        reqJsonParameters.put("entityId", "urn:ngsi-ld:dataentity:" + id);
+        reqJsonParameters.put("eccUrl",eccUrl);
+        reqJsonParameters.put("brokerUrl",consumerFiwareUrl);
+            this.oneNetRestTemplate.dataentityRequesFromProvider(reqJsonParameters, consumerDataAppUrl);
 
-        Map<String, Object> jsonLdParameters = this.oneNetRestTemplate.retrieveData("dataentity", id, consumerFiwareUrl );
+        Map<String, Object> jsonLdParameters = this.oneNetRestTemplate.retrieveData("dataentity", id, consumerDataAppUrl );
 
-        Map<String, String> sizeRef = (Map<String, String>) jsonLdParameters.get("partsSize");
-        Integer size = Integer.valueOf(sizeRef.get("value"));
+        Map<String, Object> sizeRef = (Map<String, Object>) jsonLdParameters.get("partsSize");
+        Integer size = (Integer) sizeRef.get("value");
 
         for(int i = 0; i < size; i++){
 
-            exists = this.oneNetRestTemplate.checkExistance(consumerFiwareUrl, "datapart", id + "-"+ i);
-            if (!exists) {
-                Map<String, Object> dataentityRequestJsonLd =
-                        this.createConsumerProviderRequestJsonLd(id + "-"+ i,"datapart", providerAppdataUrl);
+            reqJsonParameters = new HashMap<>();
+            reqJsonParameters.put("entityId", "urn:ngsi-ld:datapart:" + id + "-"+ i);
+            reqJsonParameters.put("eccUrl",eccUrl);
+            reqJsonParameters.put("brokerUrl",consumerFiwareUrl);
+            this.oneNetRestTemplate.dataentityRequesFromProvider(reqJsonParameters, consumerDataAppUrl);
 
-                this.oneNetRestTemplate.dataentityRequesFromProvider(dataentityRequestJsonLd, id, consumerFiwareUrl);
-            }
-
-            Map<String, Object> jsonLdPartParameters = this.oneNetRestTemplate.retrieveData("datapart", id + "-"+ i, consumerFiwareUrl);
+            Map<String, Object> jsonLdPartParameters = this.oneNetRestTemplate.retrieveData("datapart", id + "-"+ i, consumerDataAppUrl);
             Map<String, String> partRef = (Map<String, String>) jsonLdPartParameters.get("part");
             String part = partRef.get("value");
             fileParts.add(part);

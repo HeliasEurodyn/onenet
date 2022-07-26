@@ -1,6 +1,7 @@
 FROM adoptopenjdk/openjdk11:jre11u-centos-nightly
 
 EXPOSE 30000
+EXPOSE 30001
 
 RUN java -version
 
