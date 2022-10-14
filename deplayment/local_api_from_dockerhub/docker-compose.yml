@@ -4,11 +4,10 @@ services:
     build:
       context: local-api
       args:
-        SOFIA_URI: https://onenet-ngsi-ld.eurodyn.com/api
+        CENTRAL_REGISTRY: https://onenet-ngsi-ld.eurodyn.com/api
       dockerfile: Dockerfile
     image: local-api
     container_name: local-api
     ports:
       - "30001:30001"
-      - "30000:30000"
     restart: unless-stopped

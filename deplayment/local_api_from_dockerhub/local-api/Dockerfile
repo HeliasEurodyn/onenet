@@ -1,13 +1,11 @@
 FROM eurodynrnd/onenet-local-api:latest
 
-EXPOSE 30000
 EXPOSE 30001
 
-ARG SOFIA_URI
-ENV SOFIA_URI_ENV=${SOFIA_URI}
+ARG CENTRAL_REGISTRY
+ENV CENTRAL_REGISTRY_ENV=${CENTRAL_REGISTRY}
 
-COPY data/scripts/start.sh /opt/scripts/
-RUN chmod u+x /opt/scripts/start.sh
-
-#Run
-ENTRYPOINT ["/opt/scripts/start.sh"]
+RUN touch ./entrypoint.sh
+RUN echo "java -jar ./app.jar --sofia.uri=${CENTRAL_REGISTRY_ENV}" > ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+CMD ./entrypoint.sh
