@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  onenet-ui:
+    build:
+      context: onenet-ui
+      dockerfile: Dockerfile
+      args:
+        CENTRAL_REGISTRY_URL: https://onenet-ngsi-ld.eurodyn.com/api
+    image: onenet-ui
+    container_name: onenet-ui
+    ports:
+      - "5000:80"
+    restart: unless-stopped
