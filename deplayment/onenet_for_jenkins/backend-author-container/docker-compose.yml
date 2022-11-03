@@ -1,0 +1,31 @@
+version: "3.7"
+services:
+  sofia-backend-author:
+    build:
+      context: sofia-backend-author
+      args:
+        DB_IP: sofiadb
+        DB_PORT: 3306
+        DB_NAME: sofia
+        DB_USERNAME: root
+        DB_PASSWORD: root
+        RMT: https://rmt.ds.unipi.gr
+        REDIS_HOST: sofiaredis
+        REDIS_PORT: 6379
+        REDIS_PASSWORD: cU7bUfAKHmvvs4yg
+      dockerfile: Dockerfile
+    image: sofia-backend-author
+    container_name: sofia-backend-author
+    ports:
+      - "15503:15502"
+    restart: unless-stopped
+    depends_on:
+      - sofiaredis
+      - sofiadb
+    networks:
+      - sofia
+networks:
+  sofia:
+    external: true
+    name: sofia
+    driver: bridge

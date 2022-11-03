@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  sofia-frontend-author:
+    build:
+      context: sofia-frontend-author
+      dockerfile: Dockerfile
+      args:
+        BACKEND_URL: http://onenet-ngsi-ld-dev-server.eurodyn.com:15503/api
+    image: sofia-frontend-author
+    container_name: sofia-frontend-author
+    ports:
+      - "5001:80"
+    restart: unless-stopped
+    networks:
+      - sofia
+networks:
+  sofia:
+    external: true
+    name: sofia
+    driver: bridge
