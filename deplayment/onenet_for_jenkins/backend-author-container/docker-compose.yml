@@ -19,9 +19,6 @@ services:
     ports:
       - "15503:15502"
     restart: unless-stopped
-    depends_on:
-      - sofiaredis
-      - sofiadb
     networks:
       - sofia
 networks:
