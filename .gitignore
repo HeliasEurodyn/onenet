@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+deplayment/ui/onenet-ui/dist/
+deplayment/ui_local/onenet-ui/dist/

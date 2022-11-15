@@ -2,7 +2,7 @@ version: "3.7"
 services:
   sofia-backend:
     build:
-      context: sofia-backend
+      context: sofia-backend-author
       args:
         DB_IP: sofiadb
         DB_PORT: 3306
@@ -17,7 +17,7 @@ services:
     image: sofia-backend
     container_name: sofia-backend
     ports:
-      - "15502:15502"
+      - "15503:15502"
     restart: unless-stopped
     depends_on:
       - sofiaredis

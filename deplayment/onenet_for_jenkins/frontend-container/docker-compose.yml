@@ -5,7 +5,7 @@ services:
       context: sofia-frontend
       dockerfile: sofia-frontend/Dockerfile_
       args:
-        BACKEND_URL: http://localhost:15502/api
+        BACKEND_URL: http://onenet-ngsi-ld-dev-server:15503/api
     image: sofia-frontend
     container_name: sofia-frontend
     ports:
