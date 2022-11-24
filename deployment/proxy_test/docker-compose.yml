@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+ registry-nginx:
+   image: nginx:1.21.4
+   container_name: sofia-registry-nginx
+   command: [nginx-debug, '-g', 'daemon off;']
+   restart: unless-stopped
+   volumes:
+     - ./nginx-conf/nginx.conf:/etc/nginx/nginx.conf
+   ports:
+     - "15591:80"
+ dozzle:
+   image: amir20/dozzle
+   container_name: sofia-logs
+   restart: unless-stopped
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+   ports:
+     - "15592:8080"
